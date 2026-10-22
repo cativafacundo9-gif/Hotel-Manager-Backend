@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { HabitacionesModule } from './habitaciones/habitaciones.module.js';
+import { ReservasModule } from './reservas/reservas.module.js';
+import { HuespedesModule } from './huespedes/huespedes.module.js';
+import { MantenimientoModule } from './mantenimiento/mantenimiento.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -15,6 +19,10 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: process.env.OBSERVE_APP_SECRET ?? 'YOUR_APP_SECRET',
       serviceId: 'hotel-manager-rep3',
     }),
+    HabitacionesModule,
+    ReservasModule,
+    HuespedesModule,
+    MantenimientoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
