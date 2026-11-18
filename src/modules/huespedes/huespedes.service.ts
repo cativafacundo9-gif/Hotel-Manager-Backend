@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHuespedeDto } from './dto/create-huespede.dto.js';
-import { UpdateHuespedeDto } from './dto/update-huespede.dto.js';
+import { CreateHuespedDto } from './dto/create-huespede.dto.js';
+import { UpdateHuespedDto } from './dto/update-huespede.dto.js';
 
 @Injectable()
 export class HuespedesService {
-  create(createHuespedeDto: CreateHuespedeDto) {
-    return 'This action adds a new huespede';
+  create(createHuespedDto: CreateHuespedDto) {
+    return 'This action adds a new huesped';
   }
 
   findAll() {
@@ -13,14 +13,14 @@ export class HuespedesService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} huespede`;
+    return `This action returns a #${id} huesped`;
   }
 
-  update(id: number, updateHuespedeDto: UpdateHuespedeDto) {
-    return `This action updates a #${id} huespede`;
+  update(id: number, updateHuespedDto: UpdateHuespedDto) {
+    return `This action updates a #${id} huesped`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} huespede`;
+    return `This action removes a #${id} huesped`;
   }
 }
