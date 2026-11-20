@@ -6,6 +6,8 @@ import { HabitacionesModule } from '../habitaciones/habitaciones.module.js';
 import { HuespedesModule } from '../huespedes/huespedes.module.js';
 import { ReservasModule } from '../reservas/reservas.module.js';
 import { MantenimientoModule } from '../mantenimiento/mantenimiento.module.js';
+import { UsersModule } from '../users/users.module.js';
+import { AuthModule } from '../auth/auth.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -18,11 +20,13 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: process.env.OBSERVE_APP_SECRET ?? 'YOUR_APP_SECRET',
       serviceId: 'hotel-manager-rep3',
     }),
-    // ¡Aquí agregamos tus módulos del hotel!
+    // Módulos del hotel
     HabitacionesModule,
     HuespedesModule,
     ReservasModule,
     MantenimientoModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
