@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Habitacion {
+  id         Int       @id @default(autoincrement())
+  numero     String    @unique
+  tipo       String
+  precio     Decimal   @db.Decimal(10, 2)
+  disponible Boolean   @default(true)
+
+  reservas       Reserva[]
+  mantenimientos Mantenimiento[]
+}
+
+model Huesped {
+  id       Int    @id @default(autoincrement())
+  nombre   String
+  apellido String
+  email    String @unique
+  telefono String
+
+  reservas Reserva[]
+}
+
+model Reserva {
+  id           Int      @id @default(autoincrement())
+  fechaInicio  DateTime
+  fechaFin     DateTime
+
+  habitacionId Int
+  habitacion   Habitacion @relation(fields: [habitacionId], references: [id], onDelete: Restrict)
+
+  huespedId    Int
+  huesped      Huesped    @relation(fields: [huespedId], references: [id], onDelete: Restrict)
+}
+
+model Mantenimiento {
+  id           Int        @id @default(autoincrement())
+  descripcion  String
+  estado       String     @default("Pendiente")
+
+  habitacionId Int
+  habitacion   Habitacion @relation(fields: [habitacionId], references: [id], onDelete: Cascade)
+}

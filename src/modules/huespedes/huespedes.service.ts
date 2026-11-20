@@ -1,26 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateHuespedDto } from './dto/create-huespede.dto.js';
 import { UpdateHuespedDto } from './dto/update-huespede.dto.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { isPrismaUniqueConstraintError } from '../prisma/prisma-error.util.js';
 
 @Injectable()
 export class HuespedesService {
-  create(createHuespedDto: CreateHuespedDto) {
-    return 'This action adds a new huesped';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createHuespedDto: CreateHuespedDto) {
+    try {
+      return await this.prisma.huesped.create({
+        data: createHuespedDto,
+      });
+    } catch (error) {
+      if (isPrismaUniqueConstraintError(error)) {
+        throw new ConflictException(
+          `Ya existe un huésped registrado con el email ${createHuespedDto.email}.`,
+        );
+      }
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all huespedes`;
+  async findAll() {
+    return this.prisma.huesped.findMany({
+      orderBy: { id: 'asc' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} huesped`;
+  async findOne(id: number) {
+    const huesped = await this.prisma.huesped.findUnique({
+      where: { id },
+    });
+
+    if (!huesped) {
+      throw new NotFoundException(`El huésped #${id} no existe.`);
+    }
+
+    return huesped;
   }
 
-  update(id: number, updateHuespedDto: UpdateHuespedDto) {
-    return `This action updates a #${id} huesped`;
+  async update(id: number, updateHuespedDto: UpdateHuespedDto) {
+    await this.findOne(id);
+
+    try {
+      return await this.prisma.huesped.update({
+        where: { id },
+        data: updateHuespedDto,
+      });
+    } catch (error) {
+      if (isPrismaUniqueConstraintError(error)) {
+        throw new ConflictException(
+          `Ya existe otro huésped con ese email.`,
+        );
+      }
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} huesped`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return this.prisma.huesped.delete({
+      where: { id },
+    });
   }
 }
