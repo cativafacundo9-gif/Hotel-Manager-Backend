@@ -13,11 +13,11 @@ datasource db {
 }
 
 model Habitacion {
-  id         Int       @id @default(autoincrement())
-  numero     String    @unique
+  id         Int     @id @default(autoincrement())
+  numero     String  @unique
   tipo       String
-  precio     Decimal   @db.Decimal(10, 2)
-  disponible Boolean   @default(true)
+  precio     Decimal @db.Decimal(10, 2)
+  disponible Boolean @default(true)
 
   reservas       Reserva[]
   mantenimientos Mantenimiento[]
@@ -34,31 +34,45 @@ model Huesped {
 }
 
 model Reserva {
-  id           Int      @id @default(autoincrement())
-  fechaInicio  DateTime
-  fechaFin     DateTime
+  id          Int      @id @default(autoincrement())
+  fechaInicio DateTime
+  fechaFin    DateTime
 
   habitacionId Int
   habitacion   Habitacion @relation(fields: [habitacionId], references: [id], onDelete: Restrict)
 
-  huespedId    Int
-  huesped      Huesped    @relation(fields: [huespedId], references: [id], onDelete: Restrict)
+  huespedId Int
+  huesped   Huesped @relation(fields: [huespedId], references: [id], onDelete: Restrict)
 }
 
 model Mantenimiento {
-  id           Int        @id @default(autoincrement())
-  descripcion  String
-  estado       String     @default("Pendiente")
+  id          Int    @id @default(autoincrement())
+  descripcion String
+  estado      String @default("Pendiente")
 
   habitacionId Int
   habitacion   Habitacion @relation(fields: [habitacionId], references: [id], onDelete: Cascade)
 }
 
 model Usuario {
-  id        Int      @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   nombre    String
-  email     String   @unique
+  email     String       @unique
   password  String
-  rol       String   @default("USER")
-  createdAt DateTime @default(now())
+  rol       String       @default("USER")
+  createdAt DateTime     @default(now())
+  sesiones  SesionAuth[]
+}
+
+model SesionAuth {
+  id         Int       @id @default(autoincrement())
+  usuarioId  Int
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revoked    Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
 }
